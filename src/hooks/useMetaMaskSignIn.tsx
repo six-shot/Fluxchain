@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-//  Represents the assets needed to display a wallet
+// Represents the assets needed to display a wallet
 interface EIP6963ProviderInfo {
   uuid: string;
   name: string;
@@ -15,24 +15,30 @@ interface EIP6963ProviderDetail {
 }
 
 // Custom hook for wallet discovery and MetaMask sign-in
-const useMetaMaskSignIn = () => {
-  const [provider, setProvider] = useState<any | null>(null);
+const useWalletSignIn = () => {
+  const [providers, setProviders] = useState<EIP6963ProviderDetail[]>([]);
+  const [selectedProvider, setSelectedProvider] = useState<any | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [account, setAccount] = useState<string | null>(null);
 
   useEffect(() => {
-    // Listen for announced providers based on EIP-6963
+    // Handle announced providers and avoid duplicates
     const handleAnnounceProvider = (
       event: CustomEvent<EIP6963ProviderDetail>
     ) => {
       const { detail } = event;
-      const { info, provider } = detail;
 
-      console.log(`Wallet provider found: ${info.name}`);
-      // Automatically set the first discovered provider (MetaMask or any other injected wallet)
-      if (info.name.toLowerCase().includes("metamask")) {
-        setProvider(provider);
-      }
+      // Check if the provider is already in the list
+      setProviders((prevProviders) => {
+        const exists = prevProviders.some(
+          (provider) => provider.info.uuid === detail.info.uuid
+        );
+        if (exists) return prevProviders; // Don't add if it already exists
+
+        return [...prevProviders, detail];
+      });
+
+      console.log(`Wallet provider found: ${detail.info.name}`);
     };
 
     // Request providers to announce themselves
@@ -58,24 +64,31 @@ const useMetaMaskSignIn = () => {
     };
   }, []);
 
-  // Function to handle connecting to MetaMask and getting the account
-  const connectMetaMask = async () => {
-    if (!provider) {
-      setError("MetaMask provider not found. Ensure MetaMask is installed.");
+  // Function to handle connecting to the selected provider and getting the account
+  const connectProvider = async () => {
+    if (!selectedProvider) {
+      setError("Provider not selected. Please choose a wallet.");
       return;
     }
 
     try {
-      const accounts = await provider.request({
+      const accounts = await selectedProvider.provider.request({
         method: "eth_requestAccounts",
       });
       setAccount(accounts[0]);
     } catch (err: any) {
-      setError(err.message || "Failed to connect to MetaMask.");
+      setError(err.message || "Failed to connect to provider.");
     }
   };
 
-  return { provider, account, error, connectMetaMask };
+  return {
+    providers,
+    selectedProvider,
+    setSelectedProvider,
+    account,
+    error,
+    connectProvider,
+  };
 };
 
-export default useMetaMaskSignIn;
+export default useWalletSignIn;

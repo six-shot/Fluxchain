@@ -1,31 +1,61 @@
+import useWalletSignIn from "../hooks/useMetaMaskSignIn";
 
-import useMetaMaskSignIn from "../hooks/useMetaMaskSignIn";
-
-const MetaMaskSignInComponent = () => {
-  const { provider, account, error, connectMetaMask } = useMetaMaskSignIn();
+const WalletConnectComponent = () => {
+  const {
+    providers,
+    selectedProvider,
+    setSelectedProvider,
+    account,
+    error,
+    connectProvider,
+  } = useWalletSignIn();
 
   return (
     <div>
-      <h1>MetaMask Sign-In</h1>
+      <h1>Connect Your Wallet</h1>
 
-      {/* Display the connection status */}
-      {provider ? (
-        <p>MetaMask provider found.</p>
-      ) : (
-        <p>MetaMask provider not found.</p>
-      )}
+      {/* Show list of available providers */}
+      <div>
+        {providers.length > 0 ? (
+          providers.map((providerDetail) => (
+            <div
+              key={providerDetail.info.uuid}
+              onClick={() => setSelectedProvider(providerDetail)}
+              style={{
+                cursor: "pointer",
+                border:
+                  selectedProvider?.info.uuid === providerDetail.info.uuid
+                    ? "2px solid green"
+                    : "1px solid gray",
+                padding: "10px",
+                marginBottom: "10px",
+              }}
+            >
+              <img
+                src={providerDetail.info.icon}
+                alt={providerDetail.info.name}
+                style={{ width: "30px", height: "30px" }}
+              />
+              <p>{providerDetail.info.name}</p>
+            </div>
+          ))
+        ) : (
+          <p>No wallet providers found. Ensure you have installed a wallet.</p>
+        )}
+      </div>
 
-      {/* Display the connected account */}
-      {account ? (
-        <p>Connected Account: {account}</p>
-      ) : (
-        <button onClick={connectMetaMask}>Connect to MetaMask</button>
-      )}
+      {/* Button to connect to selected provider */}
+      <button onClick={connectProvider} disabled={!selectedProvider}>
+        {selectedProvider
+          ? `Connect to ${selectedProvider.info.name}`
+          : "Select a Wallet"}
+      </button>
 
-      {/* Display any error messages */}
+      {/* Display the account or error */}
+      {account && <p>Connected Account: {account}</p>}
       {error && <p style={{ color: "red" }}>{error}</p>}
     </div>
   );
 };
 
-export default MetaMaskSignInComponent;
+export default WalletConnectComponent;
