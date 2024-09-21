@@ -14,7 +14,21 @@ interface EIP6963ProviderDetail {
   provider: any; // EIP-1193 provider type
 }
 
-// Custom hook for wallet discovery and MetaMask sign-in
+// Predefined wallet names
+const predefinedWallets = [
+  {
+    name: "MetaMask",
+    uuid: "metamask-uuid", // Mock UUID for MetaMask
+    icon: "metamask-icon-url", // URL for MetaMask icon (replace with actual URL)
+  },
+  {
+    name: "Coinbase Wallet",
+    uuid: "coinbase-uuid", // Mock UUID for Coinbase Wallet
+    icon: "coinbase-icon-url", // URL for Coinbase icon (replace with actual URL)
+  },
+];
+
+// Custom hook for wallet discovery and MetaMask/Coinbase sign-in
 const useWalletSignIn = () => {
   const [providers, setProviders] = useState<EIP6963ProviderDetail[]>([]);
   const [selectedProvider, setSelectedProvider] = useState<any | null>(null);
@@ -88,6 +102,7 @@ const useWalletSignIn = () => {
     account,
     error,
     connectProvider,
+    predefinedWallets, // Add predefined wallets
   };
 };
 
