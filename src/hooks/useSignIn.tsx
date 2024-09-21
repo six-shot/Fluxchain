@@ -19,13 +19,13 @@ interface EIP6963ProviderDetail {
 const predefinedWallets = [
   {
     name: "MetaMask",
-    uuid: "",
-    icon: metamask, 
+    uuid: "metamask-uuid",
+    icon: metamask,
   },
   {
     name: "Coinbase Wallet",
-    uuid: "", 
-    icon: coinbase, 
+    uuid: "coinbase-uuid",
+    icon: coinbase,
   },
 ];
 
