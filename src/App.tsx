@@ -1,5 +1,5 @@
 import './App.css';
-import WalletConnectComponent from './components/MetaMaskSignInComponent';
+import WalletConnectComponent from './components/SiginComponent';
 
 function App() {
   return (

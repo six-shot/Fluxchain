@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import useWalletSignIn from "../hooks/useMetaMaskSignIn";
+import useWalletSignIn from "../hooks/useSignIn";
 
 const WalletConnectComponent = () => {
   const {
