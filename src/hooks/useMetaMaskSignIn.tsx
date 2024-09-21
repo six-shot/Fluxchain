@@ -102,7 +102,7 @@ const useWalletSignIn = () => {
     account,
     error,
     connectProvider,
-    predefinedWallets, // Add predefined wallets
+    predefinedWallets, 
   };
 };
 

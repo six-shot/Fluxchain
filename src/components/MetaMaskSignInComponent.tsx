@@ -1,3 +1,5 @@
+
+import { useState } from "react";
 import useWalletSignIn from "../hooks/useMetaMaskSignIn";
 
 const WalletConnectComponent = () => {
@@ -11,7 +13,9 @@ const WalletConnectComponent = () => {
     predefinedWallets, // Added predefined wallets
   } = useWalletSignIn();
 
-  // Combine predefined wallets with the detected providers
+  const [showOtherWallets, setShowOtherWallets] = useState(false);
+
+  // Combine predefined wallets with detected providers
   const allProviders = predefinedWallets.map((predefined) => {
     const foundProvider = providers.find(
       (provider) => provider.info.name === predefined.name
@@ -24,11 +28,19 @@ const WalletConnectComponent = () => {
     );
   });
 
+  // Filter other wallets that are not MetaMask or Coinbase
+  const otherProviders = providers.filter(
+    (provider) =>
+      !predefinedWallets.some(
+        (predefined) => predefined.name === provider.info.name
+      )
+  );
+
   return (
     <div>
       <h1>Connect Your Wallet</h1>
 
-      {/* Show list of available and predefined providers */}
+      {/* Show MetaMask and Coinbase Wallet by default */}
       <div>
         {allProviders.map((providerDetail) => (
           <div
@@ -63,12 +75,51 @@ const WalletConnectComponent = () => {
         ))}
       </div>
 
-      {/* Button to connect to selected provider */}
-      <button onClick={connectProvider} disabled={!selectedProvider}>
-        {selectedProvider
-          ? `Connect to ${selectedProvider.info.name}`
-          : "Select a Wallet"}
+      {/* Button to show other wallets */}
+      <button onClick={() => setShowOtherWallets(!showOtherWallets)}>
+        {showOtherWallets ? "Hide Other Wallets" : "Other Wallets"}
       </button>
+
+      {/* Dynamically show other wallets when the button is clicked */}
+      {showOtherWallets && (
+        <div>
+          {otherProviders.length > 0 ? (
+            otherProviders.map((providerDetail) => (
+              <div
+                key={providerDetail.info.uuid}
+                onClick={() => setSelectedProvider(providerDetail)}
+                style={{
+                  cursor: "pointer",
+                  border:
+                    selectedProvider?.info.uuid === providerDetail.info.uuid
+                      ? "2px solid green"
+                      : "1px solid gray",
+                  padding: "10px",
+                  marginBottom: "10px",
+                }}
+              >
+                <img
+                  src={providerDetail.info.icon}
+                  alt={providerDetail.info.name}
+                  style={{ width: "30px", height: "30px" }}
+                />
+                <p>{providerDetail.info.name}</p>
+              </div>
+            ))
+          ) : (
+            <p>No other wallet providers found.</p>
+          )}
+        </div>
+      )}
+
+      {/* Button to connect to selected provider */}
+      <div>
+        <button onClick={connectProvider} disabled={!selectedProvider}>
+          {selectedProvider
+            ? `Connect to ${selectedProvider.info.name}`
+            : "Select a Wallet"}
+        </button>
+      </div>
 
       {/* Display the account or error */}
       {account && <p>Connected Account: {account}</p>}
