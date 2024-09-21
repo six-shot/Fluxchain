@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-
+import metamask from "../../src/assets/metamask.svg"
+import coinbase from "../../src/assets/coinbase.svg"
 // Represents the assets needed to display a wallet
 interface EIP6963ProviderInfo {
   uuid: string;
@@ -18,13 +19,13 @@ interface EIP6963ProviderDetail {
 const predefinedWallets = [
   {
     name: "MetaMask",
-    uuid: "metamask-uuid", // Mock UUID for MetaMask
-    icon: "metamask-icon-url", // URL for MetaMask icon (replace with actual URL)
+    uuid: "",
+    icon: metamask, 
   },
   {
     name: "Coinbase Wallet",
-    uuid: "coinbase-uuid", // Mock UUID for Coinbase Wallet
-    icon: "coinbase-icon-url", // URL for Coinbase icon (replace with actual URL)
+    uuid: "", 
+    icon: coinbase, 
   },
 ];
 
