@@ -28,7 +28,6 @@ const WalletConnectComponent = () => {
     );
   });
 
-  // Filter other wallets that are not MetaMask or Coinbase
   const otherProviders = providers.filter(
     (provider) =>
       !predefinedWallets.some(
@@ -40,7 +39,6 @@ const WalletConnectComponent = () => {
     <div>
       <h1>Connect Your Wallet</h1>
 
-      {/* Show MetaMask and Coinbase Wallet by default */}
       <div>
         {allProviders.map((providerDetail) => (
           <div
